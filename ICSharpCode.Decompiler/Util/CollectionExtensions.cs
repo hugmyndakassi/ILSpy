@@ -14,12 +14,18 @@ namespace ICSharpCode.Decompiler.Util
 			value = pair.Value;
 		}
 
-#if !NETCORE
+#if !NET8_0_OR_GREATER
 		public static IEnumerable<(A, B)> Zip<A, B>(this IEnumerable<A> input1, IEnumerable<B> input2)
 		{
 			return input1.Zip(input2, (a, b) => (a, b));
 		}
 #endif
+
+		public static IEnumerable<(int, A, B)> ZipWithIndex<A, B>(this IEnumerable<A> input1, IEnumerable<B> input2)
+		{
+			int index = 0;
+			return input1.Zip(input2, (a, b) => (index++, a, b));
+		}
 
 		public static IEnumerable<(A?, B?)> ZipLongest<A, B>(this IEnumerable<A> input1, IEnumerable<B> input2)
 		{
@@ -60,7 +66,7 @@ namespace ICSharpCode.Decompiler.Util
 			}
 		}
 
-#if !NETCORE
+#if !NET8_0_OR_GREATER
 		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> input)
 		{
 			return new HashSet<T>(input);
@@ -306,6 +312,8 @@ namespace ICSharpCode.Decompiler.Util
 			}
 		}
 
+
+#if !NET8_0_OR_GREATER
 		/// <summary>
 		/// Returns the maximum element.
 		/// </summary>
@@ -314,7 +322,7 @@ namespace ICSharpCode.Decompiler.Util
 		{
 			return source.MaxBy(keySelector, Comparer<K>.Default);
 		}
-
+#endif
 		/// <summary>
 		/// Returns the maximum element.
 		/// </summary>
@@ -370,6 +378,31 @@ namespace ICSharpCode.Decompiler.Util
 
 			return first;
 		}
+
+#if !NET8_0_OR_GREATER
+		public static int EnsureCapacity<T>(this List<T> list, int capacity)
+		{
+			if (capacity < 0)
+				throw new ArgumentOutOfRangeException(nameof(capacity));
+			if (list.Capacity < capacity)
+			{
+				const int DefaultCapacity = 4;
+				const int MaxLength = 0X7FFFFFC7;
+
+				int newcapacity = list.Capacity == 0 ? DefaultCapacity : 2 * list.Capacity;
+
+				if ((uint)newcapacity > MaxLength)
+					newcapacity = MaxLength;
+
+				if (newcapacity < capacity)
+					newcapacity = capacity;
+
+				list.Capacity = newcapacity;
+			}
+
+			return list.Capacity;
+		}
+#endif
 
 		#region Aliases/shortcuts for Enumerable extension methods
 		public static bool Any<T>(this ICollection<T> list) => list.Count > 0;

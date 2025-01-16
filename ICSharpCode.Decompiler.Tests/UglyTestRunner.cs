@@ -47,7 +47,7 @@ namespace ICSharpCode.Decompiler.Tests
 					|| file.Extension.Equals(".cs", StringComparison.OrdinalIgnoreCase))
 				{
 					var testName = file.Name.Split('.')[0];
-					Assert.Contains(testName, testNames);
+					Assert.That(testNames, Has.Member(testName));
 				}
 			}
 		}
@@ -146,7 +146,7 @@ namespace ICSharpCode.Decompiler.Tests
 			if (!File.Exists(ilFile))
 			{
 				// re-create .il file if necessary
-				CompilerResults output = null;
+				Helpers.CompilerResults output = null;
 				try
 				{
 					output = await Tester.CompileCSharp(csFile, cscOptions).ConfigureAwait(false);
@@ -163,6 +163,7 @@ namespace ICSharpCode.Decompiler.Tests
 			var decompiled = await Tester.DecompileCSharp(executable, decompilerSettings).ConfigureAwait(false);
 
 			CodeAssert.FilesAreEqual(expectedFile, decompiled, Tester.GetPreprocessorSymbols(cscOptions).ToArray());
+			Tester.RepeatOnIOError(() => File.Delete(decompiled));
 		}
 	}
 }

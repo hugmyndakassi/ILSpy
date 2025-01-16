@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using DiffLib;
+using DiffLib.Alignment;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -142,7 +143,7 @@ namespace ICSharpCode.Decompiler.Tests.Helpers
 
 			public int GetHashCode(string obj)
 			{
-				return baseComparer.GetHashCode(NormalizeLine(obj));
+				return baseComparer.GetHashCode(normalizeLine(obj));
 			}
 		}
 

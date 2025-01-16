@@ -20,6 +20,8 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 			Console.WriteLine($"\ta{args[0][0] == 'a'}");
 			Console.WriteLine($"\ta{$"a{args.Length}" == args[0]}");
 			Console.WriteLine($"\ta{args.Length}}}");
+			Console.WriteLine($"{args.Length,5:x}");
+			Console.WriteLine($"{args.Length,5}");
 		}
 
 		public static void ArrayExpansionSpecialCases(object[] args)
@@ -114,6 +116,31 @@ namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 
 		public void RequiresCast(IFormattable value)
 		{
+		}
+
+		public string ConcatStringCharSC(string s, char c)
+		{
+			return s + c;
+		}
+
+		public string ConcatStringCharCS(string s, char c)
+		{
+			return c + s;
+		}
+
+		public string ConcatStringCharSCS(string s, char c)
+		{
+			return s + c + s;
+		}
+
+		public string ConcatStringCharCSS(string s, char c)
+		{
+			return c + s + s;
+		}
+
+		public string ConcatStringCharCSSC(string s, char c)
+		{
+			return c + s + s + c;
 		}
 	}
 }
